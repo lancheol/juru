@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
-import { BOARD_SIZE, boardTiles, PRE_FINISH_POSITION } from '../data/board'
+import { BOARD_SIZE, boardTiles } from '../data/board'
 import { getTileEventVisualKey } from '../data/tileEventModal'
 import {
   buildPlayerPaths,
   applyLadderDrinks,
   createLadderGameSession,
   isLadderGameTile,
-  LADDER_GAME_TILE_IDS,
   LADDER_RESULT_LABELS,
 } from '../data/ladderGame'
 import { createPlayersFromConfig } from '../data/players'
@@ -17,7 +16,6 @@ import {
 } from '../data/roulette'
 import {
   isMoveRouletteTile,
-  MOVE_ROULETTE_TILE_ID,
   resolveMoveRouletteSteps,
 } from '../data/moveRoulette'
 import {
@@ -25,27 +23,22 @@ import {
   createInitialTitleEventImageUsedTurn,
   isTitleEventTile,
   pickTitleEventImage,
-  TITLE_EVENT_TILE_IDS,
 } from '../data/titleEvent'
 import {
   createInitialRandomGameImageUsedTurn,
   isRandomGameEventTile,
   pickRandomGameImage,
   RANDOM_GAME_IMAGES,
-  RANDOM_GAME_TILE_IDS,
 } from '../data/randomGameEvent'
 import {
   createInitialCupidImageUsedTurn,
   CUPID_IMAGES,
-  CUPID_TILE_IDS,
   isCupidEventTile,
   pickCupidImage,
 } from '../data/cupidEvent'
 import {
-  formatRandomTeamDrinkMessage,
   isRandomTeamDrinkTile,
   pickRandomTeamDrinkTeam,
-  RANDOM_TEAM_DRINK_TILE_ID,
 } from '../data/randomTeamDrinkEvent'
 import {
   buildRandomMoveSlotItems,
@@ -54,8 +47,6 @@ import {
   pickRandomMoveTargetTileId,
   RANDOM_MOVE_SLOT_RESULT_HOLD_MS,
   RANDOM_MOVE_TELEPORT_DELAY_MS,
-  RANDOM_MOVE_TILE_ID,
-  RANDOM_MOVE_TILE_NAME,
   shortestStepsToTarget,
 } from '../data/randomMoveEvent'
 import type { RandomMoveSlotItem } from '../types/randomMoveSlot'
@@ -73,29 +64,11 @@ import {
   BRIDGE_SEGMENTS,
 } from '../data/bridge'
 import {
-  BOMB_SHOT_DRINK_TILE_ID,
-  BOMB_SHOT_DRINK_TILE_NAME,
-} from '../data/bombShotDrinkEvent'
-import {
-  BOTTOM_GLASS_TAX_TILE_ID,
-  BOTTOM_GLASS_TAX_TILE_NAME,
-} from '../data/bottomGlassTaxEvent'
-import {
   createInitialExceptEljundanImageUsedTurn,
   EXCEPT_ELJUNDAN_IMAGES,
-  EXCEPT_ELJUNDAN_TILE_ID,
-  EXCEPT_ELJUNDAN_TILE_NAME,
   isExceptEljundanEventTile,
   pickExceptEljundanImage,
 } from '../data/exceptEljundanEvent'
-import {
-  FINANCE_DEPT_DRINK_TILE_ID,
-  FINANCE_DEPT_DRINK_TILE_NAME,
-} from '../data/financeDeptDrinkEvent'
-import {
-  PRESIDENT_TEAM_TILE_ID,
-  PRESIDENT_TEAM_TILE_NAME,
-} from '../data/presidentTeamEvent'
 import {
   BRIDGE_ALCOHOL_IMAGES,
   createInitialBridgeAlcoholImageUsedTurn,
@@ -110,9 +83,6 @@ import {
   findBoardCaptureVictims,
   resetPlayerToStart,
 } from '../data/tokenCapture'
-import {
-  formatTokenCaptureModalMessage,
-} from '../data/tokenCaptureEvent'
 import {
   START_LAP_IMAGE,
   START_TILE_ID,
@@ -177,207 +147,6 @@ interface BoardLandingContext {
   playerCount: number
   landingPosition: number
   landOnTileOptions?: { skipBridge?: boolean }
-}
-
-// DEV_TEST helpers — Board.tsx 테스트 버튼과 함께 제거
-function isDevTestBlocked(state: GameState): boolean {
-  return (
-    state.isFinished ||
-    state.isMoving ||
-    state.isRolling ||
-    state.showDiceModal ||
-    state.showLadderGameModal ||
-    state.showTileEventModal ||
-    state.showRandomMoveSlotModal ||
-    state.showRouletteModal ||
-    state.showIslandEscapeModal ||
-    state.showCaptureModal ||
-    state.showForbiddenWordInputModal ||
-    state.showForbiddenWordWarningModal ||
-    state.showForbiddenWordRevealModal ||
-    state.showPlayerItemUseConfirmModal
-  )
-}
-
-interface TileEventTestExtras {
-  tileEventPhotoSrc?: string | null
-  tileEventStartLapCount?: number | null
-  randomMoveTargetTileId?: number | null
-  titleEventLastImageIndex?: number | null
-  titleEventImageUsedTurn?: number[]
-  randomGameEventLastImageIndex?: number | null
-  randomGameEventImageUsedTurn?: number[]
-  cupidEventLastImageIndex?: number | null
-  cupidEventImageUsedTurn?: number[]
-  exceptEljundanEventLastImageIndex?: number | null
-  exceptEljundanEventImageUsedTurn?: number[]
-  randomTeamDrinkLastTeamIndex?: number | null
-  randomTeamDrinkPickedTeamName?: string | null
-}
-
-function buildTileEventModalTestUpdate(
-  prev: GameState,
-  tileId: number,
-  label: string,
-  dicePrefix: string,
-  extras: TileEventTestExtras = {},
-): { state: GameState; pending: PendingTurnFinish } | null {
-  if (isDevTestBlocked(prev)) return null
-
-  const idx = prev.currentPlayerIndex
-  const tile = boardTiles[tileId]
-  const players = [...prev.players]
-  players[idx] = {
-    ...players[idx],
-    position: tileId,
-    bridgeStatus: 'none',
-    bridgeSegment: null,
-    ...(isIslandTile(tileId)
-      ? {}
-      : { islandStatus: 'none' as const, islandEscapeTurnsLeft: 0 }),
-  }
-
-  if (isIslandTile(tileId)) {
-    players[idx] = markIslandStranded(players[idx])
-  }
-
-  const pending: PendingTurnFinish = {
-    playerIndex: idx,
-    player: players[idx],
-    dice: 0,
-    lapGain: 0,
-    messages: [`[테스트] ${players[idx].name} → ${tileId}번 ${label}`],
-    dicePrefix,
-  }
-
-  const state: GameState = {
-    ...prev,
-    players,
-    dice: null,
-    tokenJump: null,
-    showTileEventModal: true,
-    tileEventTileId: tileId,
-    tileEventVisualKey: getTileEventVisualKey(tile),
-    tileEventPhotoSrc: extras.tileEventPhotoSrc ?? null,
-    tileEventStartLapCount: extras.tileEventStartLapCount ?? null,
-    randomMoveTargetTileId: extras.randomMoveTargetTileId ?? null,
-    message: `[테스트] ${players[idx].name} → ${tileId}번 ${label}`,
-    ...(extras.titleEventLastImageIndex !== undefined
-      ? { titleEventLastImageIndex: extras.titleEventLastImageIndex }
-      : {}),
-    ...(extras.titleEventImageUsedTurn !== undefined
-      ? { titleEventImageUsedTurn: extras.titleEventImageUsedTurn }
-      : {}),
-    ...(extras.randomGameEventLastImageIndex !== undefined
-      ? { randomGameEventLastImageIndex: extras.randomGameEventLastImageIndex }
-      : {}),
-    ...(extras.randomGameEventImageUsedTurn !== undefined
-      ? { randomGameEventImageUsedTurn: extras.randomGameEventImageUsedTurn }
-      : {}),
-    ...(extras.cupidEventLastImageIndex !== undefined
-      ? { cupidEventLastImageIndex: extras.cupidEventLastImageIndex }
-      : {}),
-    ...(extras.cupidEventImageUsedTurn !== undefined
-      ? { cupidEventImageUsedTurn: extras.cupidEventImageUsedTurn }
-      : {}),
-    ...(extras.exceptEljundanEventLastImageIndex !== undefined
-      ? { exceptEljundanEventLastImageIndex: extras.exceptEljundanEventLastImageIndex }
-      : {}),
-    ...(extras.exceptEljundanEventImageUsedTurn !== undefined
-      ? { exceptEljundanEventImageUsedTurn: extras.exceptEljundanEventImageUsedTurn }
-      : {}),
-    ...(extras.randomTeamDrinkLastTeamIndex !== undefined
-      ? { randomTeamDrinkLastTeamIndex: extras.randomTeamDrinkLastTeamIndex }
-      : {}),
-    ...(extras.randomTeamDrinkPickedTeamName !== undefined
-      ? { randomTeamDrinkPickedTeamName: extras.randomTeamDrinkPickedTeamName }
-      : {}),
-  }
-
-  return { state, pending }
-}
-
-function buildBridgeSegmentModalTestUpdate(
-  prev: GameState,
-  segmentIndex: number,
-): { state: GameState; pending: PendingTurnFinish } | null {
-  if (isDevTestBlocked(prev)) return null
-
-  const segment = BRIDGE_SEGMENTS[segmentIndex]
-  if (!segment) return null
-
-  const visualKey: TileEventVisualKey =
-    segment.type === 'water' ? 'bridge-water' : 'bridge-alcohol'
-
-  const idx = prev.currentPlayerIndex
-  const players = [...prev.players]
-  players[idx] = {
-    ...players[idx],
-    position: BRIDGE_ENTRANCE,
-    bridgeStatus: 'on',
-    bridgeSegment: segmentIndex,
-  }
-
-  let tileEventPhotoSrc: string | null = null
-  let bridgeAlcoholEventLastImageIndex = prev.bridgeAlcoholEventLastImageIndex
-  let bridgeAlcoholEventImageUsedTurn = prev.bridgeAlcoholEventImageUsedTurn
-  let bridgeWaterEventLastImageIndex = prev.bridgeWaterEventLastImageIndex
-  let bridgeWaterEventImageUsedTurn = prev.bridgeWaterEventImageUsedTurn
-
-  const alcoholUsedTurn =
-    prev.bridgeAlcoholEventImageUsedTurn ?? createInitialBridgeAlcoholImageUsedTurn()
-  const waterUsedTurn =
-    prev.bridgeWaterEventImageUsedTurn ?? createInitialBridgeWaterImageUsedTurn()
-
-  if (visualKey === 'bridge-alcohol') {
-    const picked = pickBridgeAlcoholImage(
-      prev.gameTurnCount,
-      prev.bridgeAlcoholEventLastImageIndex,
-      alcoholUsedTurn,
-    )
-    tileEventPhotoSrc = BRIDGE_ALCOHOL_IMAGES[picked] ?? null
-    bridgeAlcoholEventLastImageIndex = picked
-    bridgeAlcoholEventImageUsedTurn = [...alcoholUsedTurn]
-    bridgeAlcoholEventImageUsedTurn[picked] = prev.gameTurnCount
-  } else {
-    const picked = pickBridgeWaterImage(
-      prev.gameTurnCount,
-      prev.bridgeWaterEventLastImageIndex,
-      waterUsedTurn,
-    )
-    tileEventPhotoSrc = BRIDGE_WATER_IMAGES[picked] ?? null
-    bridgeWaterEventLastImageIndex = picked
-    bridgeWaterEventImageUsedTurn = [...waterUsedTurn]
-    bridgeWaterEventImageUsedTurn[picked] = prev.gameTurnCount
-  }
-
-  const label = `주당의 길 ${segment.label}`
-  const pending: PendingTurnFinish = {
-    playerIndex: idx,
-    player: players[idx],
-    dice: 0,
-    lapGain: 0,
-    messages: [`[테스트] ${players[idx].name} → ${label}`],
-    dicePrefix: segment.type === 'water' ? '💧' : '🍶',
-  }
-
-  const state: GameState = {
-    ...prev,
-    players,
-    dice: null,
-    tokenJump: null,
-    showTileEventModal: true,
-    tileEventTileId: BRIDGE_ENTRANCE,
-    tileEventVisualKey: visualKey,
-    tileEventPhotoSrc,
-    message: `[테스트] ${players[idx].name} → ${label}`,
-    bridgeAlcoholEventLastImageIndex,
-    bridgeAlcoholEventImageUsedTurn,
-    bridgeWaterEventLastImageIndex,
-    bridgeWaterEventImageUsedTurn,
-  }
-
-  return { state, pending }
 }
 
 function sleep(ms: number) {
@@ -2556,65 +2325,6 @@ export function useGame(config: GameConfig) {
     })
   }, [])
 
-  // DEV_TEST — 칸별 특수 기능 추가 시 대표 칸 1개만 테스트 버튼 추가 (동일 기능 중복 칸 제외)
-  // 삭제 시 이 블록과 Board.tsx 테스트 버튼 함께 제거
-  const goToDiceRollerDrinkTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildTileEventModalTestUpdate(prev, 1, '주사위 굴린 사람 마셔', '🍻')
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToHongjebuDrinkTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildTileEventModalTestUpdate(prev, 5, '홍제부 마셔', '🍻')
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToRandomMoveTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = RANDOM_MOVE_TILE_ID
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const pending: PendingTurnFinish = {
-        playerIndex: idx,
-        player: players[idx],
-        dice: 0,
-        lapGain: 0,
-        messages: [`[테스트] ${players[idx].name} → ${tileId}번 ${RANDOM_MOVE_TILE_NAME}`],
-        dicePrefix: '🎯',
-      }
-      pendingTurnFinishRef.current = pending
-
-      return {
-        ...prev,
-        players,
-        dice: null,
-        tokenJump: null,
-        message: `[테스트] ${players[idx].name} → ${tileId}번 ${RANDOM_MOVE_TILE_NAME}`,
-        showRandomMoveSlotModal: true,
-        randomMoveSlotPhase: 'idle',
-        randomMoveTargetTileId: null,
-      }
-    })
-  }, [])
-
   const randomMoveSlotItems = useMemo(() => buildRandomMoveSlotItems(boardTiles), [])
 
   const prepareRandomMoveSlotSpin = useCallback((): RandomMoveSlotItem | null => {
@@ -2692,524 +2402,6 @@ export function useGame(config: GameConfig) {
     })()
   }, [])
 
-  const goToRandomGameTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = RANDOM_GAME_TILE_IDS[0]
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const picked = pickRandomGameImage(
-        prev.gameTurnCount,
-        prev.randomGameEventLastImageIndex,
-        prev.randomGameEventImageUsedTurn,
-      )
-      const randomGameEventImageUsedTurn = [...prev.randomGameEventImageUsedTurn]
-      randomGameEventImageUsedTurn[picked] = prev.gameTurnCount
-
-      const result = buildTileEventModalTestUpdate(
-        { ...prev, players },
-        tileId,
-        '내가 좋아하는 랜덤게임',
-        '🎲',
-        {
-          tileEventPhotoSrc: RANDOM_GAME_IMAGES[picked],
-          randomGameEventLastImageIndex: picked,
-          randomGameEventImageUsedTurn,
-        },
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToCupidTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = CUPID_TILE_IDS[0]
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const picked = pickCupidImage(
-        prev.gameTurnCount,
-        prev.cupidEventLastImageIndex,
-        prev.cupidEventImageUsedTurn,
-      )
-      const cupidEventImageUsedTurn = [...prev.cupidEventImageUsedTurn]
-      cupidEventImageUsedTurn[picked] = prev.gameTurnCount
-
-      const result = buildTileEventModalTestUpdate(
-        { ...prev, players },
-        tileId,
-        '사랑의 큐피트',
-        '💘',
-        {
-          tileEventPhotoSrc: CUPID_IMAGES[picked],
-          cupidEventLastImageIndex: picked,
-          cupidEventImageUsedTurn,
-        },
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToIslandTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = ISLAND_TILE_ID
-      const players = [...prev.players]
-      players[idx] = markIslandStranded({
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      })
-
-      const result = buildTileEventModalTestUpdate(
-        { ...prev, players },
-        tileId,
-        '무인도',
-        '🏝️',
-        {
-          tileEventPhotoSrc: ISLAND_IMAGE,
-        },
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToRandomTeamDrinkTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const pickedTeam = pickRandomTeamDrinkTeam(
-        prev.players.map((player) => player.name),
-        prev.randomTeamDrinkLastTeamIndex,
-      )
-      const result = buildTileEventModalTestUpdate(
-        prev,
-        RANDOM_TEAM_DRINK_TILE_ID,
-        formatRandomTeamDrinkMessage(pickedTeam.teamName),
-        '🍻',
-        {
-          randomTeamDrinkLastTeamIndex: pickedTeam.teamIndex,
-          randomTeamDrinkPickedTeamName: pickedTeam.teamName,
-        },
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToFinanceDeptDrinkTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildTileEventModalTestUpdate(
-        prev,
-        FINANCE_DEPT_DRINK_TILE_ID,
-        FINANCE_DEPT_DRINK_TILE_NAME,
-        '🍻',
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToPresidentTeamTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildTileEventModalTestUpdate(
-        prev,
-        PRESIDENT_TEAM_TILE_ID,
-        PRESIDENT_TEAM_TILE_NAME,
-        '🍻',
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToBottomGlassTaxTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildTileEventModalTestUpdate(
-        prev,
-        BOTTOM_GLASS_TAX_TILE_ID,
-        BOTTOM_GLASS_TAX_TILE_NAME,
-        '🍻',
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToBridgeAlcoholTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildBridgeSegmentModalTestUpdate(prev, 0)
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToBridgeWaterTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildBridgeSegmentModalTestUpdate(prev, 1)
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToBombShotDrinkTest = useCallback(() => {
-    setState((prev) => {
-      const result = buildTileEventModalTestUpdate(
-        prev,
-        BOMB_SHOT_DRINK_TILE_ID,
-        BOMB_SHOT_DRINK_TILE_NAME.replace('\n', ' '),
-        '🍻',
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToExceptEljundanTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = EXCEPT_ELJUNDAN_TILE_ID
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const picked = pickExceptEljundanImage(
-        prev.gameTurnCount,
-        prev.exceptEljundanEventLastImageIndex,
-        prev.exceptEljundanEventImageUsedTurn,
-      )
-      const exceptEljundanEventImageUsedTurn = [...prev.exceptEljundanEventImageUsedTurn]
-      exceptEljundanEventImageUsedTurn[picked] = prev.gameTurnCount
-
-      const result = buildTileEventModalTestUpdate(
-        { ...prev, players },
-        tileId,
-        EXCEPT_ELJUNDAN_TILE_NAME,
-        '🍻',
-        {
-          tileEventPhotoSrc: EXCEPT_ELJUNDAN_IMAGES[picked],
-          exceptEljundanEventLastImageIndex: picked,
-          exceptEljundanEventImageUsedTurn,
-        },
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToBridgeTest = useCallback(() => {
-    setState((prev) => {
-      if (prev.isFinished || prev.isMoving || prev.isRolling || prev.showDiceModal) {
-        return prev
-      }
-      const idx = prev.currentPlayerIndex
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: BRIDGE_ENTRANCE,
-        bridgeStatus: 'pending',
-        bridgeSegment: null,
-      }
-      return {
-        ...prev,
-        players,
-        dice: null,
-        tokenJump: null,
-        message: `[테스트] ${players[idx].name} → ${BRIDGE_ENTRANCE}번 주당의 길 입구`,
-      }
-    })
-  }, [])
-
-  const goToPreFinishTest = useCallback(() => {
-    setState((prev) => {
-      if (prev.isFinished || prev.isMoving || prev.isRolling || prev.showDiceModal) {
-        return prev
-      }
-      const idx = prev.currentPlayerIndex
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: PRE_FINISH_POSITION,
-        lapCount: Math.max(0, prev.totalLaps - 1),
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-      return {
-        ...prev,
-        players,
-        dice: null,
-        tokenJump: null,
-        message: `[테스트] ${players[idx].name} → ${PRE_FINISH_POSITION}번 (출발 직전, 마지막 바퀴)`,
-      }
-    })
-  }, [])
-
-  const goToLadderTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = LADDER_GAME_TILE_IDS[0]
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const session = createLadderGameSession(tileId, idx, prev.players.length)
-
-      pendingTurnFinishRef.current = {
-        playerIndex: idx,
-        player: players[idx],
-        dice: 0,
-        lapGain: 0,
-        messages: [`[테스트] ${players[idx].name} → ${tileId}번 사다리타기`],
-        dicePrefix: '🪜',
-      }
-
-      return {
-        ...prev,
-        players,
-        dice: null,
-        tokenJump: null,
-        showLadderGameModal: true,
-        ladderGameSession: session,
-        message: `[테스트] ${players[idx].name} → ${tileId}번 사다리타기`,
-      }
-    })
-  }, [])
-
-  const goToBombChefTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = TITLE_EVENT_TILE_IDS[0]
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const picked = pickTitleEventImage(
-        prev.gameTurnCount,
-        prev.titleEventLastImageIndex,
-        prev.titleEventImageUsedTurn,
-      )
-      const titleEventImageUsedTurn = [...prev.titleEventImageUsedTurn]
-      titleEventImageUsedTurn[picked] = prev.gameTurnCount
-
-      const result = buildTileEventModalTestUpdate(
-        { ...prev, players },
-        tileId,
-        '폭탄주 요리사',
-        '🍹',
-        {
-          tileEventPhotoSrc: BOMB_CHEF_IMAGES[picked],
-          titleEventLastImageIndex: picked,
-          titleEventImageUsedTurn,
-        },
-      )
-      if (!result) return prev
-      pendingTurnFinishRef.current = result.pending
-      return result.state
-    })
-  }, [])
-
-  const goToRouletteTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = 4
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const session = createRouletteSession(tileId)
-
-      pendingTurnFinishRef.current = {
-        playerIndex: idx,
-        player: players[idx],
-        dice: 0,
-        lapGain: 0,
-        messages: [`[테스트] ${players[idx].name} → ${tileId}번 죽음의 룰렛`],
-        dicePrefix: '🎰',
-      }
-
-      return {
-        ...prev,
-        players,
-        dice: null,
-        tokenJump: null,
-        showRouletteModal: true,
-        rouletteSession: session,
-        message: `[테스트] ${players[idx].name} → ${tileId}번 죽음의 룰렛`,
-      }
-    })
-  }, [])
-
-  const goToMoveRouletteTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const tileId = MOVE_ROULETTE_TILE_ID
-      const players = [...prev.players]
-      players[idx] = {
-        ...players[idx],
-        position: tileId,
-        bridgeStatus: 'none',
-        bridgeSegment: null,
-      }
-
-      const session = createRouletteSession(tileId)
-
-      pendingTurnFinishRef.current = {
-        playerIndex: idx,
-        player: players[idx],
-        dice: 0,
-        lapGain: 0,
-        messages: [`[테스트] ${players[idx].name} → ${tileId}번 이동 룰렛`],
-        dicePrefix: '🎯',
-      }
-
-      return {
-        ...prev,
-        players,
-        dice: null,
-        tokenJump: null,
-        showRouletteModal: true,
-        rouletteSession: session,
-        message: `[테스트] ${players[idx].name} → ${tileId}번 이동 룰렛`,
-      }
-    })
-  }, [])
-
-  const goToCaptureTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const capturedIndex = (idx + 1) % prev.players.length
-      const capturedName = prev.players[capturedIndex]?.name ?? '플레이어 2'
-
-      return {
-        ...prev,
-        showCaptureModal: true,
-        capturedPlayerNames: [capturedName],
-        message: `[테스트] ${formatTokenCaptureModalMessage([capturedName])}`,
-      }
-    })
-  }, [])
-
-  const grantDrinkExemptionItemTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const player = prev.players[idx]
-      if (!player) return prev
-
-      const players = [...prev.players]
-      players[idx] = grantPlayerItem(player, 'drink-exemption')
-
-      return {
-        ...prev,
-        players,
-        message: `[테스트] ${player.name} → 술 1잔 면제권 획득`,
-      }
-    })
-  }, [])
-
-  const openForbiddenWordInputTest = useCallback(() => {
-    setState((prev) => {
-      if (isDevTestBlocked(prev)) {
-        return prev
-      }
-
-      const idx = prev.currentPlayerIndex
-      const player = prev.players[idx]
-      if (!player) return prev
-
-      return {
-        ...prev,
-        showForbiddenWordInputModal: true,
-        forbiddenWordInputPlayerName: player.name,
-        message: `[테스트] ${player.name} → 금지어 입력`,
-      }
-    })
-  }, [])
-
   return {
     ...state,
     currentPlayer,
@@ -3238,28 +2430,5 @@ export function useGame(config: GameConfig) {
     confirmPlayerItemUse,
     prepareRandomMoveSlotSpin,
     completeRandomMoveSlotSpin,
-    goToDiceRollerDrinkTest,
-    goToHongjebuDrinkTest,
-    goToPresidentTeamTest,
-    goToFinanceDeptDrinkTest,
-    goToRandomTeamDrinkTest,
-    goToCaptureTest,
-    goToBottomGlassTaxTest,
-    goToExceptEljundanTest,
-    goToBombShotDrinkTest,
-    goToRandomMoveTest,
-    goToRandomGameTest,
-    goToCupidTest,
-    goToIslandTest,
-    goToBridgeTest,
-    goToBridgeAlcoholTest,
-    goToBridgeWaterTest,
-    goToPreFinishTest,
-    goToLadderTest,
-    goToBombChefTest,
-    goToRouletteTest,
-    goToMoveRouletteTest,
-    grantDrinkExemptionItemTest,
-    openForbiddenWordInputTest,
   }
 }

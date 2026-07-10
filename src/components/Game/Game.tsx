@@ -177,52 +177,6 @@ export function Game({ config, onBackToSetup }: GameProps) {
 
     completeRandomMoveSlotSpin,
 
-    goToDiceRollerDrinkTest,
-
-    goToHongjebuDrinkTest,
-
-    goToPresidentTeamTest,
-
-    goToFinanceDeptDrinkTest,
-
-    goToRandomTeamDrinkTest,
-
-    goToCaptureTest,
-
-    goToBottomGlassTaxTest,
-
-    goToExceptEljundanTest,
-
-    goToBombShotDrinkTest,
-
-    goToRandomMoveTest,
-
-    goToRandomGameTest,
-
-    goToCupidTest,
-
-    goToIslandTest,
-
-    goToBridgeTest,
-
-    goToBridgeAlcoholTest,
-
-    goToBridgeWaterTest,
-
-    goToPreFinishTest,
-
-    goToLadderTest,
-
-    goToBombChefTest,
-
-    goToRouletteTest,
-
-    goToMoveRouletteTest,
-
-    grantDrinkExemptionItemTest,
-
-    openForbiddenWordInputTest,
-
   } = useGame(config)
 
   const randomMoveSlotModalRef = useRef<RandomMoveSlotModalHandle>(null)
@@ -690,49 +644,6 @@ export function Game({ config, onBackToSetup }: GameProps) {
         onRoll={roll}
 
         onBackToSetup={onBackToSetup}
-
-        onDiceRollerDrinkTest={goToDiceRollerDrinkTest}
-
-        onHongjebuDrinkTest={goToHongjebuDrinkTest}
-
-        onPresidentTeamTest={goToPresidentTeamTest}
-
-        onFinanceDeptDrinkTest={goToFinanceDeptDrinkTest}
-
-        onRandomTeamDrinkTest={goToRandomTeamDrinkTest}
-
-        onCaptureTest={goToCaptureTest}
-
-        onBottomGlassTaxTest={goToBottomGlassTaxTest}
-
-        onExceptEljundanTest={goToExceptEljundanTest}
-
-        onBombShotDrinkTest={goToBombShotDrinkTest}
-
-        onRandomMoveTest={goToRandomMoveTest}
-
-        onRandomGameTest={goToRandomGameTest}
-
-        onCupidTest={goToCupidTest}
-
-        onIslandTest={goToIslandTest}
-
-        onBridgeTest={goToBridgeTest}
-
-        onBridgeAlcoholTest={goToBridgeAlcoholTest}
-
-        onBridgeWaterTest={goToBridgeWaterTest}
-
-        onPreFinishTest={goToPreFinishTest}
-
-        onLadderTest={goToLadderTest}
-
-        onBombChefTest={goToBombChefTest}
-
-        onRouletteTest={goToRouletteTest}
-        onMoveRouletteTest={goToMoveRouletteTest}
-        onGrantDrinkExemptionItemTest={grantDrinkExemptionItemTest}
-        onForbiddenWordInputTest={openForbiddenWordInputTest}
 
       />
 
