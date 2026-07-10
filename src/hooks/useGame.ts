@@ -3,8 +3,8 @@ import type { Dispatch, SetStateAction } from 'react'
 import { BOARD_SIZE, boardTiles, PRE_FINISH_POSITION } from '../data/board'
 import { getTileEventVisualKey } from '../data/tileEventModal'
 import {
-  applyLadderDrinks,
   buildPlayerPaths,
+  applyLadderDrinks,
   createLadderGameSession,
   isLadderGameTile,
   LADDER_GAME_TILE_IDS,
@@ -118,7 +118,18 @@ import {
   START_TILE_ID,
 } from '../data/startLapEvent'
 import type { GameConfig, GameState, LandResult, MoveStep, Player, TileEffect, TileEventVisualKey } from '../types/game'
+import type { PlayerItemId } from '../types/playerItem'
 import type { RouletteSegment } from '../types/roulette'
+import {
+  FORBIDDEN_WORD_REVEAL_SECONDS,
+  FORBIDDEN_WORD_VIEW_DRINK_COUNT,
+  isForbiddenWordRouletteSegment,
+} from '../data/forbiddenWord'
+import {
+  grantPlayerItem,
+  consumePlayerItemAt,
+  isDrinkExemptionRouletteSegment,
+} from '../data/playerItems'
 
 const DICE_ROLL_MS = 1800
 const DICE_RESULT_HOLD_MS = 1500
@@ -180,7 +191,11 @@ function isDevTestBlocked(state: GameState): boolean {
     state.showRandomMoveSlotModal ||
     state.showRouletteModal ||
     state.showIslandEscapeModal ||
-    state.showCaptureModal
+    state.showCaptureModal ||
+    state.showForbiddenWordInputModal ||
+    state.showForbiddenWordWarningModal ||
+    state.showForbiddenWordRevealModal ||
+    state.showPlayerItemUseConfirmModal
   )
 }
 
@@ -444,6 +459,14 @@ function createInitialState(config: GameConfig): GameState {
     ladderGameSession: null,
     showRouletteModal: false,
     rouletteSession: null,
+    forbiddenWords: [],
+    showForbiddenWordInputModal: false,
+    forbiddenWordInputPlayerName: null,
+    showForbiddenWordWarningModal: false,
+    showForbiddenWordRevealModal: false,
+    forbiddenWordRevealSecondsLeft: 0,
+    showPlayerItemUseConfirmModal: false,
+    pendingPlayerItemUse: null,
   }
 }
 
@@ -631,7 +654,12 @@ function landOnTile(
   }
 
   next.position = position
-  return { player: next, messages, followUpSteps, lapGain }
+  return {
+    player: next,
+    messages,
+    followUpSteps,
+    lapGain,
+  }
 }
 
 async function animateBoardStep(
@@ -1094,7 +1122,14 @@ function tryFinishTurnWithModal(
     dicePrefix,
   }
   pendingRef.current = pending
-  openTileEventModal(setState, pending, player, tileId, visualKey, fullMessage)
+  openTileEventModal(
+    setState,
+    pending,
+    player,
+    tileId,
+    visualKey,
+    fullMessage,
+  )
 }
 
 function tryFinishTurnOrLadder(
@@ -1508,7 +1543,10 @@ async function runBridgeTurn(
     setState((prev) => {
       const players = [...prev.players]
       players[playerIndex] = player
-      return { ...prev, players }
+      return {
+        ...prev,
+        players,
+      }
     })
 
     const landingSegment = path.length > 0 ? path[path.length - 1] : null
@@ -1828,6 +1866,7 @@ export function useGame(config: GameConfig) {
   const turnLockRef = useRef(false)
   const pendingTurnFinishRef = useRef<PendingTurnFinish | null>(null)
   const pendingAfterCaptureRef = useRef<PendingAfterCapture | null>(null)
+  const rouletteResultSegmentRef = useRef<RouletteSegment | null>(null)
   const stateRef = useRef(state)
   stateRef.current = state
 
@@ -1854,6 +1893,10 @@ export function useGame(config: GameConfig) {
       stateRef.current.showRouletteModal ||
       stateRef.current.showIslandEscapeModal ||
       stateRef.current.showCaptureModal ||
+      stateRef.current.showForbiddenWordInputModal ||
+      stateRef.current.showForbiddenWordWarningModal ||
+      stateRef.current.showForbiddenWordRevealModal ||
+      stateRef.current.showPlayerItemUseConfirmModal ||
       turnLockRef.current
     ) {
       return
@@ -2227,6 +2270,10 @@ export function useGame(config: GameConfig) {
       const session = prev.rouletteSession
       if (!session || session.phase !== 'spinning') return prev
 
+      if (session.resultIndex != null) {
+        rouletteResultSegmentRef.current = session.segments[session.resultIndex] ?? null
+      }
+
       return {
         ...prev,
         rouletteSession: {
@@ -2240,6 +2287,7 @@ export function useGame(config: GameConfig) {
   const dismissRouletteGame = useCallback(() => {
     const pending = pendingTurnFinishRef.current
     if (!pending) {
+      rouletteResultSegmentRef.current = null
       setState((prev) => ({
         ...prev,
         showRouletteModal: false,
@@ -2248,11 +2296,15 @@ export function useGame(config: GameConfig) {
       return
     }
 
+    if (stateRef.current.showForbiddenWordInputModal) {
+      return
+    }
+
     const session = stateRef.current.rouletteSession
     const resultSegment =
       session?.resultIndex != null
         ? session.segments[session.resultIndex]
-        : null
+        : rouletteResultSegmentRef.current
 
     if (session && isMoveRouletteTile(session.tileId) && resultSegment) {
       pendingTurnFinishRef.current = null
@@ -2279,7 +2331,65 @@ export function useGame(config: GameConfig) {
       return
     }
 
+    if (
+      !isMoveRouletteTile(session?.tileId ?? -1) &&
+      isForbiddenWordRouletteSegment(resultSegment)
+    ) {
+      const playerName =
+        stateRef.current.players[pending.playerIndex]?.name ?? pending.player.name
+
+      rouletteResultSegmentRef.current = null
+
+      setState((prev) => ({
+        ...prev,
+        showRouletteModal: false,
+        rouletteSession: null,
+        showForbiddenWordInputModal: true,
+        forbiddenWordInputPlayerName: playerName,
+      }))
+      return
+    }
+
+    if (
+      session &&
+      !isMoveRouletteTile(session.tileId) &&
+      isDrinkExemptionRouletteSegment(resultSegment)
+    ) {
+      pendingTurnFinishRef.current = null
+      rouletteResultSegmentRef.current = null
+
+      const grantedPlayer = grantPlayerItem(
+        stateRef.current.players[pending.playerIndex] ?? pending.player,
+        'drink-exemption',
+      )
+
+      setState((prev) => {
+        const players = [...prev.players]
+        players[pending.playerIndex] = grantedPlayer
+        return {
+          ...prev,
+          players,
+          showRouletteModal: false,
+          rouletteSession: null,
+        }
+      })
+
+      const messages = [...pending.messages, '[룰렛] 술 1잔 면제권 획득']
+
+      finishTurn(
+        setState,
+        pending.playerIndex,
+        grantedPlayer,
+        pending.dice,
+        pending.lapGain,
+        messages,
+        pending.dicePrefix,
+      )
+      return
+    }
+
     pendingTurnFinishRef.current = null
+    rouletteResultSegmentRef.current = null
 
     setState((prev) => {
       const players = [...prev.players]
@@ -2314,6 +2424,136 @@ export function useGame(config: GameConfig) {
       messages,
       pending.dicePrefix,
     )
+  }, [])
+
+  const submitForbiddenWord = useCallback((word: string) => {
+    const trimmed = word.trim()
+    if (!trimmed) return
+
+    setState((prev) => ({
+      ...prev,
+      forbiddenWords: [...prev.forbiddenWords, trimmed],
+      showForbiddenWordInputModal: false,
+      forbiddenWordInputPlayerName: null,
+    }))
+
+    const pending = pendingTurnFinishRef.current
+    if (!pending) return
+
+    pendingTurnFinishRef.current = null
+
+    const player = stateRef.current.players[pending.playerIndex] ?? pending.player
+    const messages = [...pending.messages, `[룰렛] 금지어 추가: ${trimmed}`]
+
+    finishTurn(
+      setState,
+      pending.playerIndex,
+      player,
+      pending.dice,
+      pending.lapGain,
+      messages,
+      pending.dicePrefix,
+    )
+  }, [])
+
+  const openForbiddenWordView = useCallback(() => {
+    setState((prev) => {
+      if (prev.forbiddenWords.length === 0) return prev
+      return { ...prev, showForbiddenWordWarningModal: true }
+    })
+  }, [])
+
+  const cancelForbiddenWordView = useCallback(() => {
+    setState((prev) => ({ ...prev, showForbiddenWordWarningModal: false }))
+  }, [])
+
+  const confirmForbiddenWordView = useCallback(() => {
+    setState((prev) => {
+      const idx = prev.currentPlayerIndex
+      const players = [...prev.players]
+      const player = players[idx]
+      if (player) {
+        players[idx] = {
+          ...player,
+          drinkCount: player.drinkCount + FORBIDDEN_WORD_VIEW_DRINK_COUNT,
+        }
+      }
+
+      return {
+        ...prev,
+        players,
+        showForbiddenWordWarningModal: false,
+        showForbiddenWordRevealModal: true,
+        forbiddenWordRevealSecondsLeft: FORBIDDEN_WORD_REVEAL_SECONDS,
+        message: `${player?.name ?? '플레이어'}님이 금지어를 확인했습니다. 술 ${FORBIDDEN_WORD_VIEW_DRINK_COUNT}잔!`,
+      }
+    })
+  }, [])
+
+  const tickForbiddenWordReveal = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      forbiddenWordRevealSecondsLeft: Math.max(0, prev.forbiddenWordRevealSecondsLeft - 1),
+    }))
+  }, [])
+
+  const completeForbiddenWordReveal = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      showForbiddenWordRevealModal: false,
+      forbiddenWordRevealSecondsLeft: 0,
+    }))
+  }, [])
+
+  const requestPlayerItemUse = useCallback(
+    (playerId: number, itemId: PlayerItemId, itemIndex: number) => {
+      setState((prev) => {
+        const playerIndex = prev.players.findIndex((player) => player.id === playerId)
+        if (playerIndex < 0) return prev
+        if (prev.players[playerIndex]?.items[itemIndex] !== itemId) return prev
+
+        return {
+          ...prev,
+          showPlayerItemUseConfirmModal: true,
+          pendingPlayerItemUse: { playerIndex, itemId, itemIndex },
+        }
+      })
+    },
+    [],
+  )
+
+  const cancelPlayerItemUse = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      showPlayerItemUseConfirmModal: false,
+      pendingPlayerItemUse: null,
+    }))
+  }, [])
+
+  const confirmPlayerItemUse = useCallback(() => {
+    setState((prev) => {
+      const pending = prev.pendingPlayerItemUse
+      if (!pending) {
+        return {
+          ...prev,
+          showPlayerItemUseConfirmModal: false,
+          pendingPlayerItemUse: null,
+        }
+      }
+
+      const players = [...prev.players]
+      const player = players[pending.playerIndex]
+      if (player && player.items[pending.itemIndex] === pending.itemId) {
+        players[pending.playerIndex] = consumePlayerItemAt(player, pending.itemIndex)
+      }
+
+      return {
+        ...prev,
+        players,
+        showPlayerItemUseConfirmModal: false,
+        pendingPlayerItemUse: null,
+      }
+    })
   }, [])
 
   // DEV_TEST — 칸별 특수 기능 추가 시 대표 칸 1개만 테스트 버튼 추가 (동일 기능 중복 칸 제외)
@@ -2930,6 +3170,46 @@ export function useGame(config: GameConfig) {
     })
   }, [])
 
+  const grantDrinkExemptionItemTest = useCallback(() => {
+    setState((prev) => {
+      if (isDevTestBlocked(prev)) {
+        return prev
+      }
+
+      const idx = prev.currentPlayerIndex
+      const player = prev.players[idx]
+      if (!player) return prev
+
+      const players = [...prev.players]
+      players[idx] = grantPlayerItem(player, 'drink-exemption')
+
+      return {
+        ...prev,
+        players,
+        message: `[테스트] ${player.name} → 술 1잔 면제권 획득`,
+      }
+    })
+  }, [])
+
+  const openForbiddenWordInputTest = useCallback(() => {
+    setState((prev) => {
+      if (isDevTestBlocked(prev)) {
+        return prev
+      }
+
+      const idx = prev.currentPlayerIndex
+      const player = prev.players[idx]
+      if (!player) return prev
+
+      return {
+        ...prev,
+        showForbiddenWordInputModal: true,
+        forbiddenWordInputPlayerName: player.name,
+        message: `[테스트] ${player.name} → 금지어 입력`,
+      }
+    })
+  }, [])
+
   return {
     ...state,
     currentPlayer,
@@ -2947,6 +3227,15 @@ export function useGame(config: GameConfig) {
     startRouletteSpin,
     completeRouletteSpin,
     dismissRouletteGame,
+    submitForbiddenWord,
+    openForbiddenWordView,
+    cancelForbiddenWordView,
+    confirmForbiddenWordView,
+    tickForbiddenWordReveal,
+    completeForbiddenWordReveal,
+    requestPlayerItemUse,
+    cancelPlayerItemUse,
+    confirmPlayerItemUse,
     prepareRandomMoveSlotSpin,
     completeRandomMoveSlotSpin,
     goToDiceRollerDrinkTest,
@@ -2970,5 +3259,7 @@ export function useGame(config: GameConfig) {
     goToBombChefTest,
     goToRouletteTest,
     goToMoveRouletteTest,
+    grantDrinkExemptionItemTest,
+    openForbiddenWordInputTest,
   }
 }

@@ -1,6 +1,9 @@
 import type { LadderGameSession } from './ladderGame'
+import type { PendingPlayerItemUse } from './playerItem'
 import type { RandomMoveSlotPhase } from './randomMoveSlot'
 import type { RouletteSession } from './roulette'
+
+import type { PlayerItemId } from './playerItem'
 
 export type TileType =
   | 'start'
@@ -42,6 +45,7 @@ export interface Player {
   bridgeSegment: number | null
   islandStatus: IslandStatus
   islandEscapeTurnsLeft: number
+  items: PlayerItemId[]
 }
 
 export interface GameConfig {
@@ -116,6 +120,14 @@ export interface GameState {
   ladderGameSession: LadderGameSession | null
   showRouletteModal: boolean
   rouletteSession: RouletteSession | null
+  forbiddenWords: string[]
+  showForbiddenWordInputModal: boolean
+  forbiddenWordInputPlayerName: string | null
+  showForbiddenWordWarningModal: boolean
+  showForbiddenWordRevealModal: boolean
+  forbiddenWordRevealSecondsLeft: number
+  showPlayerItemUseConfirmModal: boolean
+  pendingPlayerItemUse: PendingPlayerItemUse | null
 }
 
 export interface TileEffect {

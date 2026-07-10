@@ -1,0 +1,158 @@
+.forbidden-word-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(8, 24, 40, 0.55);
+  backdrop-filter: blur(4px);
+  animation: forbidden-word-fade-in 0.2s ease-out;
+}
+
+.forbidden-word-overlay--reveal {
+  z-index: 1090;
+}
+
+.forbidden-word-modal {
+  box-sizing: border-box;
+  width: min(92vw, 340px);
+  padding: 1.35rem 1.25rem 1.25rem;
+  background: linear-gradient(180deg, var(--color-surface), var(--color-bg-muted));
+  border: 2px solid var(--color-primary-border);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  animation: forbidden-word-pop-in 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.forbidden-word-modal--reveal {
+  width: min(92vw, 360px);
+}
+
+.forbidden-word-modal__title {
+  margin: 0 0 0.65rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary-text);
+}
+
+.forbidden-word-modal__desc {
+  margin: 0 0 0.85rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.forbidden-word-modal__desc strong {
+  color: var(--color-primary-text);
+}
+
+.forbidden-word-modal__warning {
+  margin: 0 0 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #c62828;
+  word-break: keep-all;
+}
+
+.forbidden-word-modal__input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.85rem;
+  padding: 0.7rem 0.85rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary-border);
+  border-radius: 10px;
+}
+
+.forbidden-word-modal__input:focus {
+  outline: none;
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.forbidden-word-modal__actions {
+  display: flex;
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+.forbidden-word-modal__button {
+  min-width: 5.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-primary-text);
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.forbidden-word-modal__button--primary {
+  color: #fff;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-primary-dark));
+  border-color: transparent;
+}
+
+.forbidden-word-modal__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.forbidden-word-modal__timer {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary-dark);
+  line-height: 1;
+}
+
+.forbidden-word-modal__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: min(50svh, 280px);
+  overflow-y: auto;
+}
+
+.forbidden-word-modal__list-item {
+  padding: 0.55rem 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-primary-border);
+  border-radius: 8px;
+  word-break: break-all;
+}
+
+@keyframes forbidden-word-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes forbidden-word-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

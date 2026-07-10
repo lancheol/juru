@@ -22,6 +22,14 @@ import {
 
 import { RouletteModal } from '../Roulette/RouletteModal'
 
+import {
+  ForbiddenWordInputModal,
+} from '../ForbiddenWord/ForbiddenWordInputModal'
+import { ForbiddenWordRevealModal } from '../ForbiddenWord/ForbiddenWordRevealModal'
+import { ForbiddenWordWarningModal } from '../ForbiddenWord/ForbiddenWordWarningModal'
+
+import { PlayerItemUseConfirmModal } from '../PlayerItem/PlayerItemUseConfirmModal'
+
 import { TileEventModal } from '../TileEvent/TileEventModal'
 
 import { VictoryModal } from '../Victory/VictoryModal'
@@ -107,6 +115,22 @@ export function Game({ config, onBackToSetup }: GameProps) {
 
     rouletteSession,
 
+    forbiddenWords,
+
+    showForbiddenWordInputModal,
+
+    forbiddenWordInputPlayerName,
+
+    showForbiddenWordWarningModal,
+
+    showForbiddenWordRevealModal,
+
+    forbiddenWordRevealSecondsLeft,
+
+    showPlayerItemUseConfirmModal,
+
+    pendingPlayerItemUse,
+
     roll,
 
     rollIslandEscape,
@@ -130,6 +154,24 @@ export function Game({ config, onBackToSetup }: GameProps) {
     completeRouletteSpin,
 
     dismissRouletteGame,
+
+    submitForbiddenWord,
+
+    openForbiddenWordView,
+
+    cancelForbiddenWordView,
+
+    confirmForbiddenWordView,
+
+    tickForbiddenWordReveal,
+
+    completeForbiddenWordReveal,
+
+    requestPlayerItemUse,
+
+    cancelPlayerItemUse,
+
+    confirmPlayerItemUse,
 
     prepareRandomMoveSlotSpin,
 
@@ -177,6 +219,10 @@ export function Game({ config, onBackToSetup }: GameProps) {
 
     goToMoveRouletteTest,
 
+    grantDrinkExemptionItemTest,
+
+    openForbiddenWordInputTest,
+
   } = useGame(config)
 
   const randomMoveSlotModalRef = useRef<RandomMoveSlotModalHandle>(null)
@@ -201,7 +247,15 @@ export function Game({ config, onBackToSetup }: GameProps) {
 
     showIslandEscapeModal ||
 
-    showCaptureModal
+    showCaptureModal ||
+
+    showForbiddenWordInputModal ||
+
+    showForbiddenWordWarningModal ||
+
+    showForbiddenWordRevealModal ||
+
+    showPlayerItemUseConfirmModal
 
 
 
@@ -230,6 +284,10 @@ export function Game({ config, onBackToSetup }: GameProps) {
       }
 
 
+
+      if (showForbiddenWordInputModal) {
+        return
+      }
 
       if (showRouletteModal && rouletteSession?.phase === 'result') {
 
@@ -409,6 +467,8 @@ export function Game({ config, onBackToSetup }: GameProps) {
 
     startRouletteSpin,
 
+    showForbiddenWordInputModal,
+
   ])
 
 
@@ -550,6 +610,47 @@ export function Game({ config, onBackToSetup }: GameProps) {
 
       />
 
+      <ForbiddenWordInputModal
+
+        open={showForbiddenWordInputModal}
+
+        playerName={forbiddenWordInputPlayerName ?? currentPlayer.name}
+
+        onSubmit={submitForbiddenWord}
+
+      />
+
+      <ForbiddenWordWarningModal
+
+        open={showForbiddenWordWarningModal}
+
+        onConfirm={confirmForbiddenWordView}
+
+        onCancel={cancelForbiddenWordView}
+
+      />
+
+      <ForbiddenWordRevealModal
+
+        open={showForbiddenWordRevealModal}
+
+        words={forbiddenWords}
+
+        secondsLeft={forbiddenWordRevealSecondsLeft}
+
+        onTick={tickForbiddenWordReveal}
+
+        onComplete={completeForbiddenWordReveal}
+
+      />
+
+      <PlayerItemUseConfirmModal
+        open={showPlayerItemUseConfirmModal}
+        itemId={pendingPlayerItemUse?.itemId ?? null}
+        onConfirm={confirmPlayerItemUse}
+        onCancel={cancelPlayerItemUse}
+      />
+
       <Board
 
         players={players}
@@ -573,6 +674,14 @@ export function Game({ config, onBackToSetup }: GameProps) {
         isBridgeMode={isBridgeMode}
 
         mainRollDisabled={mainRollDisabled}
+
+        forbiddenWords={forbiddenWords}
+
+        onForbiddenWordView={openForbiddenWordView}
+
+        itemUseBusy={showPlayerItemUseConfirmModal}
+
+        onItemClick={requestPlayerItemUse}
 
         tokenJump={tokenJump}
 
@@ -622,6 +731,8 @@ export function Game({ config, onBackToSetup }: GameProps) {
 
         onRouletteTest={goToRouletteTest}
         onMoveRouletteTest={goToMoveRouletteTest}
+        onGrantDrinkExemptionItemTest={grantDrinkExemptionItemTest}
+        onForbiddenWordInputTest={openForbiddenWordInputTest}
 
       />
 

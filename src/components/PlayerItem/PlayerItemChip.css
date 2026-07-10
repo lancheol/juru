@@ -1,0 +1,50 @@
+.player-item-chip-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.player-item-chip__count {
+  font-size: clamp(0.82rem, 2.3vw, 0.92rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--color-primary-darker);
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.player-item-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 19px;
+  padding: 0 8px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+  color: #5c3d00;
+  background: linear-gradient(145deg, #fff4cc 0%, #f5d76e 55%, #e8b84a 100%);
+  border: 1.5px solid #c9922e;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.player-item-chip:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+}
+
+.player-item-chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.player-item-chip__label {
+  line-height: 1;
+}

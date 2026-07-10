@@ -16,7 +16,7 @@ export const DEATH_ROULETTE_SEGMENTS: RouletteSegment[] = [
     id: 'two-line-poem-1',
     label: '2행시',
     color: '#cdb4f5',
-    description: '내 왼쪽 사람이 정해주는 단어로 2행시하고 오른쪽 사람한테 평가 받기',
+    description: '내 왼쪽 사람이 정해주는 단어로 2행시하고\n오른쪽 사람한테 평가 받기',
   },
   {
     id: 'alcohol-exemption',
@@ -29,13 +29,13 @@ export const DEATH_ROULETTE_SEGMENTS: RouletteSegment[] = [
     id: 'two-line-poem-2',
     label: '2행시',
     color: '#dda8f0',
-    description: '내 왼쪽 사람이 정해주는 단어로 2행시하고 오른쪽 사람한테 평가 받기',
+    description: '내 왼쪽 사람이 정해주는 단어로 2행시하고\n오른쪽 사람한테 평가 받기',
   },
   {
     id: 'team-swap',
     label: '팀바꾸기',
     color: '#9edfd4',
-    description: '팀원들과 회의를 통해 한명을 다른 팀원 한명과 교체 가능 (안바꾸기 X, 팀 바뀌면 자리 옮기기)',
+    description: '팀원들과 논의 후 한명을 다른 팀원 한명과 교체 가능\n(안바꾸기 X, 팀 바뀌면 자리 옮기기)',
   },
   {
     id: 'water-ghost',
@@ -47,7 +47,7 @@ export const DEATH_ROULETTE_SEGMENTS: RouletteSegment[] = [
     id: 'five-strengths',
     label: '나의 장점 5개 말하기',
     color: '#f5a8c8',
-    description: '룰렛 걸린 사람이 한명을 지목, 5초안에 장점을 5개 말하기',
+    description: '룰렛 걸린 사람이 한명을 지목\n5초안에 장점을 5개 말하기',
   },
   {
     id: 'forbidden-word',

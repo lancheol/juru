@@ -1,4 +1,5 @@
 import type { GameConfig, Player } from '../types/game'
+import type { PlayerItemId } from '../types/playerItem'
 
 export const PLAYER_COLORS = [
   '#e74c3c',
@@ -25,6 +26,7 @@ export function createPlayersFromConfig(config: GameConfig): Player[] {
     bridgeSegment: null,
     islandStatus: 'none',
     islandEscapeTurnsLeft: 0,
+    items: [] as PlayerItemId[],
   }))
 }
 

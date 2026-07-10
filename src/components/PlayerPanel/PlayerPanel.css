@@ -1,98 +1,238 @@
-.player-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.player-panel--split {
-  flex-direction: row;
-  align-items: stretch;
-  gap: clamp(6px, 1.2vw, 10px);
-}
-
-.player-panel__column {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(5px, 0.9vh, 8px);
-}
-
-.player-panel--split .player-card {
-  padding: clamp(7px, 1vh, 10px) clamp(8px, 2vw, 12px);
-}
-
-.player-panel--split .player-card__name {
-  font-size: clamp(0.78rem, 2.2vw, 0.9rem);
-}
-
-.player-panel--split .player-card__laps,
-.player-panel--split .player-card__drinks {
-  font-size: clamp(0.72rem, 2vw, 0.82rem);
-}
-
-.player-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--color-surface);
-  border: 2px solid var(--color-primary-border);
-  border-radius: 10px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.player-card--active {
-  border-color: var(--color-primary-dark);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
-}
-
-.player-card__header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.player-card__token {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.player-card__name {
-  font-size: clamp(0.9rem, 2.5vw, 1rem);
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.player-card__turn {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #fff;
-  background: var(--color-primary-dark);
-  padding: 3px 7px;
-  border-radius: 4px;
-}
-
-.player-card__drinks {
-  font-size: clamp(0.85rem, 2.3vw, 0.95rem);
-  font-weight: 700;
-  color: var(--color-primary-text);
-  font-variant-numeric: tabular-nums;
-}
-
-.player-card__stats {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-}
-
-.player-card__laps {
-  font-size: clamp(0.82rem, 2.3vw, 0.92rem);
-  font-weight: 600;
-  color: var(--color-primary-darker);
-  font-variant-numeric: tabular-nums;
-}
+.player-panel {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  width: 100%;
+
+}
+
+
+
+.player-panel--split {
+
+  flex-direction: row;
+
+  align-items: stretch;
+
+  gap: clamp(6px, 1.2vw, 10px);
+
+}
+
+
+
+.player-panel__column {
+
+  flex: 1;
+
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: clamp(5px, 0.9vh, 8px);
+
+}
+
+
+
+.player-panel--split .player-card {
+
+  padding: clamp(7px, 1vh, 10px) clamp(8px, 2vw, 12px);
+
+}
+
+
+
+.player-panel--split .player-card__name {
+
+  font-size: clamp(0.78rem, 2.2vw, 0.9rem);
+
+}
+
+
+
+.player-panel--split .player-card__laps,
+
+.player-panel--split .player-card__drinks,
+
+.player-panel--split .player-item-chip__count {
+
+  font-size: clamp(0.72rem, 2vw, 0.82rem);
+
+}
+
+
+
+.player-card {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 12px 16px;
+
+  background: var(--color-surface);
+
+  border: 2px solid var(--color-primary-border);
+
+  border-radius: 10px;
+
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  gap: 8px;
+
+}
+
+
+
+.player-card__main {
+
+  flex: 1;
+
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 8px;
+
+}
+
+
+
+.player-card__items {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: flex-end;
+
+  gap: 4px;
+
+  flex-shrink: 0;
+
+  max-width: 148px;
+
+}
+
+
+
+.player-card--active {
+
+  border-color: var(--color-primary-dark);
+
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+
+}
+
+
+
+.player-card__header {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+}
+
+
+
+.player-card__token {
+
+  width: 16px;
+
+  height: 16px;
+
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+}
+
+
+
+.player-card__name {
+
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+
+  font-weight: 600;
+
+  color: var(--color-text);
+
+}
+
+
+
+.player-card__turn {
+
+  font-size: 0.78rem;
+
+  font-weight: 700;
+
+  color: #fff;
+
+  background: var(--color-primary-dark);
+
+  padding: 3px 7px;
+
+  border-radius: 4px;
+
+}
+
+
+
+.player-card__drinks {
+
+  font-size: clamp(0.85rem, 2.3vw, 0.95rem);
+
+  font-weight: 700;
+
+  color: var(--color-primary-text);
+
+  font-variant-numeric: tabular-nums;
+
+}
+
+
+
+.player-card__stats {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 2px;
+
+  margin-right: 4px;
+
+}
+
+
+
+.player-card__laps {
+
+  font-size: clamp(0.82rem, 2.3vw, 0.92rem);
+
+  font-weight: 600;
+
+  color: var(--color-primary-darker);
+
+  font-variant-numeric: tabular-nums;
+
+}
+

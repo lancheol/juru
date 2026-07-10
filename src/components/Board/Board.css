@@ -30,7 +30,7 @@
   justify-content: center;
   gap: 12px;
   padding-block: 12px;
-  padding-inline: 12px;
+  padding-inline: 6px;
   min-height: 0;
   overflow: hidden;
   box-sizing: border-box;
@@ -38,12 +38,12 @@
 
 .board__status,
 .board__stack {
-  width: min(100%, 320px);
+  width: min(100%, 440px);
   margin-inline: auto;
 }
 
 .board__stack:has(.player-panel--split) {
-  width: min(100%, 400px);
+  width: min(100%, 560px);
 }
 
 .board__stack {
@@ -182,10 +182,12 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 3px;
+  margin-right: 4px;
 }
 
 .board__center .player-card__laps,
-.board__center .player-card__drinks {
+.board__center .player-card__drinks,
+.board__center .player-item-chip__count {
   font-size: clamp(0.8rem, 2.4vw, 0.9rem);
   white-space: nowrap;
 }
@@ -199,7 +201,8 @@
 }
 
 .board__center .player-panel--split .player-card__laps,
-.board__center .player-panel--split .player-card__drinks {
+.board__center .player-panel--split .player-card__drinks,
+.board__center .player-panel--split .player-item-chip__count {
   font-size: clamp(0.72rem, 2vw, 0.82rem);
 }
 
@@ -232,6 +235,15 @@
 }
 
 @media (max-width: 600px) {
+  .board__status,
+  .board__stack {
+    width: min(100%, 96%);
+  }
+
+  .board__stack:has(.player-panel--split) {
+    width: min(100%, 96%);
+  }
+
   .board__center {
     gap: 10px;
     padding-block: 8px;

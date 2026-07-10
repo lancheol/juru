@@ -10,7 +10,9 @@ import { RANDOM_TEAM_DRINK_TILE_ID } from '../../data/randomTeamDrinkEvent'
 import { PRESIDENT_TEAM_TILE_ID } from '../../data/presidentTeamEvent'
 import { RANDOM_MOVE_TILE_ID } from '../../data/randomMoveEvent'
 import type { Player, TokenJump } from '../../types/game'
+import type { PlayerItemId } from '../../types/playerItem'
 import { Dice } from '../Dice/Dice'
+import { ForbiddenWordViewButton } from '../ForbiddenWord/ForbiddenWordViewButton'
 import { PlayerPanel } from '../PlayerPanel/PlayerPanel'
 import { Bridge } from './Bridge'
 import { BoardTile } from './BoardTile'
@@ -29,6 +31,10 @@ interface BoardProps {
   isFinished: boolean
   isBridgeMode: boolean
   mainRollDisabled?: boolean
+  forbiddenWords?: string[]
+  onForbiddenWordView?: () => void
+  itemUseBusy?: boolean
+  onItemClick?: (playerId: number, itemId: PlayerItemId, itemIndex: number) => void
   tokenJump: TokenJump | null
   message: string
   onRoll: () => void
@@ -54,6 +60,8 @@ interface BoardProps {
   onBombChefTest: () => void
   onRouletteTest: () => void
   onMoveRouletteTest: () => void
+  onGrantDrinkExemptionItemTest: () => void
+  onForbiddenWordInputTest: () => void
 }
 
 export function Board({
@@ -68,6 +76,10 @@ export function Board({
   isFinished,
   isBridgeMode,
   mainRollDisabled = false,
+  forbiddenWords = [],
+  onForbiddenWordView,
+  itemUseBusy = false,
+  onItemClick,
   tokenJump,
   message,
   onRoll,
@@ -93,6 +105,8 @@ export function Board({
   onBombChefTest,
   onRouletteTest,
   onMoveRouletteTest,
+  onGrantDrinkExemptionItemTest,
+  onForbiddenWordInputTest,
 }: BoardProps) {
   const statusBusy = isFinished || isMoving || isRolling || showDiceModal
 
@@ -231,6 +245,22 @@ export function Board({
               <button
                 type="button"
                 className="board__dev-test"
+                onClick={onForbiddenWordInputTest}
+                disabled={statusBusy}
+              >
+                금지어 입력 테스트
+              </button>
+              <button
+                type="button"
+                className="board__dev-test"
+                onClick={onGrantDrinkExemptionItemTest}
+                disabled={statusBusy}
+              >
+                면제권 획득 테스트
+              </button>
+              <button
+                type="button"
+                className="board__dev-test"
                 onClick={onCaptureTest}
                 disabled={statusBusy}
               >
@@ -304,7 +334,15 @@ export function Board({
               players={players}
               currentPlayerIndex={currentPlayerIndex}
               totalLaps={totalLaps}
+              itemUseBusy={itemUseBusy}
+              onItemClick={onItemClick}
             />
+            {forbiddenWords.length > 0 && onForbiddenWordView && (
+              <ForbiddenWordViewButton
+                onClick={onForbiddenWordView}
+                disabled={statusBusy}
+              />
+            )}
             <Dice
               value={dice}
               isRolling={isRolling}

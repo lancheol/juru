@@ -1,0 +1,23 @@
+.forbidden-word-view-btn {
+  width: 100%;
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-primary-text);
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.forbidden-word-view-btn:hover:not(:disabled) {
+  background: var(--color-bg-muted);
+  border-color: var(--color-primary-dark);
+}
+
+.forbidden-word-view-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
