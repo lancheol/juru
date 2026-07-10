@@ -8,12 +8,43 @@
   font-family: 'Pretendard', system-ui, -apple-system, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #2c2416;
-  background-color: #faf5f0;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* 대표색: Light Sky Blue */
+  --color-primary: #87cefa;
+  --color-primary-hover: #9dd8ff;
+  --color-primary-dark: #5eb3f0;
+  --color-primary-darker: #3a9fd9;
+  --color-primary-deep: #2a8fc9;
+  --color-primary-text: #1a5f8a;
+  --color-primary-text-muted: #4a7a9a;
+  --color-primary-border: #b8ddf7;
+  --color-primary-border-soft: #d4ebfc;
+  --color-primary-soft: rgba(135, 206, 250, 0.22);
+  --color-primary-glow: rgba(135, 206, 250, 0.45);
+
+  --color-bg: #f0f8ff;
+  --color-bg-warm: #e8f4fc;
+  --color-bg-muted: #f5fbff;
+  --color-surface: #ffffff;
+
+  --color-text: #1a3048;
+  --color-text-muted: #4a6a85;
+
+  --color-board-gradient-start: #c2e2fa;
+  --color-board-gradient-end: #92c8ef;
+
+  /* 타일 — 기본 흰색 (룰렛·사다리·주당의 길만 예외) */
+  --color-tile-bg: #ffffff;
+  --color-tile-border: #dce8f4;
+  --color-tile-index: #7a9ab8;
+  --color-tile-name: #2a4860;
+
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
 body {

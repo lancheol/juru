@@ -10,5 +10,5 @@
   margin: 0;
   padding: 24px;
   text-align: center;
-  color: #6b5c45;
+  color: var(--color-text-muted);
 }

@@ -73,7 +73,7 @@
 }
 
 .player-token--bridge-pending {
-  outline: 2px dashed rgba(107, 45, 92, 0.55);
+  outline: 2px dashed var(--color-primary-glow);
   outline-offset: 1px;
 }
 

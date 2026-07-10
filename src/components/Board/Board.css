@@ -1,7 +1,11 @@
 .board {
   width: 100%;
   height: 100%;
-  background: linear-gradient(145deg, #6b2d5c, #4a1942);
+  background: linear-gradient(
+    145deg,
+    var(--color-board-gradient-start),
+    var(--color-board-gradient-end)
+  );
   padding: 4px;
   box-sizing: border-box;
 }
@@ -102,7 +106,7 @@
   padding: 5px 10px;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #6b2d5c;
+  color: var(--color-primary-text);
   background: #fff;
   border: none;
   border-radius: 6px;
@@ -110,7 +114,7 @@
 }
 
 .board__restart:hover {
-  background: #f8f2ea;
+  background: var(--color-bg-muted);
 }
 
 /* DEV_TEST — 삭제 시 Board.tsx·useGame.ts 테스트 코드 함께 제거 */
@@ -153,7 +157,7 @@
 }
 
 .board__center .player-card--active {
-  box-shadow: 0 0 0 2px rgba(107, 45, 92, 0.15);
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
 }
 
 .board__center .player-card__header {

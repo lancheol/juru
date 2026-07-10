@@ -70,7 +70,7 @@
 
 .tile-event-modal--tile-photo .tile-event-modal__body {
   padding: 1rem 1.25rem 1.25rem;
-  background: linear-gradient(180deg, #faf5f0, #fff);
+  background: linear-gradient(180deg, var(--color-bg-muted), var(--color-surface));
   box-sizing: border-box;
   gap: 8px;
 }
@@ -146,7 +146,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: #fff;
-  background: #6b2d5c;
+  background: var(--color-primary-dark);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -154,7 +154,7 @@
 }
 
 .tile-event-modal__button:hover {
-  background: #8e4585;
+  background: var(--color-primary);
 }
 
 .tile-event-modal__button:active {

@@ -85,7 +85,7 @@ export function CaptureModal({
           <p
             id="capture-modal-title"
             className="tile-event-modal__tile-name"
-            style={{ color: '#6b2d5c' } as CSSProperties}
+            style={{ color: '#1a5f8a' } as CSSProperties}
           >
             {TOKEN_CAPTURE_MODAL_TITLE}
           </p>

@@ -145,7 +145,7 @@ export function TileEventModal({
             className="tile-event-modal__tile-name tile-event-modal__tile-name--pre-line"
             style={
               isPhotoLayout
-                ? ({ color: theme.titleColor ?? '#6b2d5c' } as CSSProperties)
+                ? ({ color: theme.titleColor ?? '#1a5f8a' } as CSSProperties)
                 : undefined
             }
           >

@@ -56,6 +56,13 @@ export const BOARD_SIZE = SIDE_TOP + SIDE_RIGHT + SIDE_BOTTOM + SIDE_LEFT
 /** 출발 칸 직전 칸 (id 29) */
 export const PRE_FINISH_POSITION = BOARD_SIZE - 1
 
+/** 검은 청색 스타일 타일 (출발 0번 제외) */
+export const DARK_NAVY_TILE_IDS = [9, 15, 24] as const
+
+export function isDarkNavyTile(tileId: number): boolean {
+  return (DARK_NAVY_TILE_IDS as readonly number[]).includes(tileId)
+}
+
 export const GRID_COLS = SIDE_TOP
 export const GRID_ROWS = 7
 

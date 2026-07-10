@@ -15,8 +15,8 @@
   width: 150px;
   height: 150px;
   padding: 0;
-  background: linear-gradient(180deg, #f8f2ea, #efe6d8);
-  border: 2px solid #e0d0b8;
+  background: linear-gradient(180deg, var(--color-bg-muted), var(--color-bg-warm));
+  border: 2px solid var(--color-primary-border);
   border-radius: 16px;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.8),
@@ -40,7 +40,7 @@
   width: 100%;
   min-width: 0;
   padding: 10px 24px;
-  background: #6b2d5c;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -51,7 +51,7 @@
 }
 
 .dice__button:hover:not(:disabled) {
-  background: #8e4585;
+  background: var(--color-primary-hover);
 }
 
 .dice__button:active:not(:disabled) {

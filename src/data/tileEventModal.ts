@@ -45,11 +45,11 @@ export const TILE_EVENT_MODAL_BY_TYPE: Record<TileType, TileEventModalTheme> = {
   start: { frameImage: startFrame, className: 'tile-event-modal--start', titleColor: '#8b6914' },
   drink: { frameImage: drinkFrame, className: 'tile-event-modal--drink', titleColor: '#8b2020' },
   mission: { frameImage: missionFrame, className: 'tile-event-modal--mission', titleColor: '#1a5080' },
-  move: { frameImage: moveFrame, className: 'tile-event-modal--move', titleColor: '#6b2d8c' },
+  move: { frameImage: moveFrame, className: 'tile-event-modal--move', titleColor: '#2a8fc9' },
   all: { frameImage: allFrame, className: 'tile-event-modal--all', titleColor: '#c45c00' },
   safe: { frameImage: safeFrame, className: 'tile-event-modal--safe', titleColor: '#1a7a45' },
   bridge: { frameImage: bridgeFrame, className: 'tile-event-modal--bridge', titleColor: '#bf360c' },
-  ladder: { frameImage: missionFrame, className: 'tile-event-modal--ladder', titleColor: '#5c3d8c' },
+  ladder: { frameImage: missionFrame, className: 'tile-event-modal--ladder', titleColor: '#2a8fc9' },
   roulette: { frameImage: missionFrame, className: 'tile-event-modal--roulette', titleColor: '#8b2020' },
   title: {
     frameImage: bombChef01,
@@ -96,84 +96,84 @@ export const TILE_EVENT_MODAL_BY_TILE_ID: Partial<Record<number, TileEventModalT
   [START_TILE_ID]: {
     frameImage: START_LAP_IMAGE,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 1번 칸 (id 1) — 업로드 이미지 */
   1: {
     frameImage: tile01Frame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 5번 칸 (id 5) */
   5: {
     frameImage: tile06Frame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 12번 칸 (id 12) */
   12: {
     frameImage: tile13Frame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 13번 칸 (id 13) */
   13: {
     frameImage: tile14Frame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 16번 칸 (id 16) — 회장단 마셔 */
   16: {
     frameImage: tile16Frame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 18번 칸 (id 18) — 밑잔 세무조사 */
   18: {
     frameImage: bottomGlassTaxFrame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 15번 칸 (id 15) — 랜덤이동 */
   15: {
     frameImage: tile18Frame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#4a148c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 22번 칸 (id 22) — 엘준단 빼고 다 마셔 */
   22: {
     frameImage: exceptEljundan01,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 24번 칸 (id 24) — 폭탄주 마셔 */
   24: {
     frameImage: bombShotDrinkFrame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 26번 칸 (id 26) — 재무부 마셔 */
   26: {
     frameImage: financeDeptFrame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
   /** 27번 칸 (id 27) — 랜덤 팀 마셔 */
   27: {
     frameImage: randomTeamDrinkFrame,
     className: 'tile-event-modal--tile-photo',
-    titleColor: '#6b2d5c',
+    titleColor: '#1a5f8a',
     layout: 'photo',
   },
 }

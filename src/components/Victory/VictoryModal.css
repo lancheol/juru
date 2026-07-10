@@ -51,12 +51,12 @@
   width: min(92vw, 320px);
   padding: 32px 28px 24px;
   text-align: center;
-  background: linear-gradient(180deg, #fff9f0, #ffe8c8);
-  border: 2px solid #ffd080;
+  background: linear-gradient(180deg, var(--color-bg), #dff0ff);
+  border: 2px solid var(--color-primary);
   border-radius: 20px;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.35),
-    0 0 0 4px rgba(255, 200, 80, 0.25);
+    0 0 0 4px var(--color-primary-soft);
   animation: victory-pop-in 0.45s cubic-bezier(0.34, 1.45, 0.64, 1);
 }
 
@@ -71,7 +71,7 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 800;
-  color: #6b2d5c;
+  color: var(--color-primary-text);
   letter-spacing: 0.02em;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .victory-modal__message strong {
-  color: #6b2d5c;
+  color: var(--color-primary-text);
   font-size: 1.15rem;
 }
 
@@ -91,7 +91,7 @@
   margin: 0 0 8px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #8b6914;
+  color: var(--color-primary-darker);
 }
 
 .victory-modal__button {
@@ -100,7 +100,7 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: #fff;
-  background: #6b2d5c;
+  background: var(--color-primary-dark);
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -108,7 +108,7 @@
 }
 
 .victory-modal__button:hover {
-  background: #8e4585;
+  background: var(--color-primary);
 }
 
 .victory-modal__button:active {

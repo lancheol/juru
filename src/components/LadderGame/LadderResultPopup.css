@@ -15,8 +15,8 @@
   box-sizing: border-box;
   width: min(92vw, 340px);
   padding: 1.5rem 1.25rem 1.35rem;
-  background: linear-gradient(180deg, #fffdf8 0%, #f8ecd8 100%);
-  border: 2px solid #d4a574;
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-warm) 100%);
+  border: 2px solid var(--color-primary-border);
   border-radius: 18px;
   box-shadow:
     0 20px 56px rgba(0, 0, 0, 0.4),
@@ -35,7 +35,7 @@
   margin: 0.35rem 0 1rem;
   font-size: 1.2rem;
   font-weight: 800;
-  color: #3d2914;
+  color: var(--color-text);
 }
 
 .ladder-result-popup__list {
@@ -55,7 +55,7 @@
   padding: 0.65rem 0.75rem;
   background: #fff;
   border-radius: 10px;
-  border: 1px solid #e8d5b5;
+  border: 1px solid var(--color-primary-border);
   text-align: left;
 }
 
@@ -70,7 +70,7 @@
 .ladder-result-popup__name {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #3d2914;
+  color: var(--color-text);
 }
 
 .ladder-result-popup__badge {
@@ -102,12 +102,12 @@
   padding: 0.75rem 1rem;
   font-size: 1rem;
   font-weight: 800;
-  color: #2a1a08;
-  background: linear-gradient(180deg, #f0b429 0%, #e09f1f 100%);
+  color: #fff;
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(224, 159, 31, 0.35);
+  box-shadow: 0 3px 10px var(--color-primary-glow);
 }
 
 .ladder-result-popup__button:hover {
