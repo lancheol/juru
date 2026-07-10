@@ -1,0 +1,148 @@
+.dice-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 10, 18, 0.55);
+  backdrop-filter: blur(4px);
+  animation: dice-modal-fade-in 0.2s ease-out;
+}
+
+.dice-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 36px 48px;
+  background: linear-gradient(180deg, #faf5f0, #f0e8dc);
+  border-radius: 20px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+  animation: dice-modal-pop-in 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.dice-modal__arena {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 32px;
+  background: linear-gradient(180deg, #fff, #f5efe6);
+  border: 2px solid #e0d0b8;
+  border-radius: 20px;
+  box-shadow:
+    inset 0 2px 6px rgba(255, 255, 255, 0.9),
+    0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dice-modal--bridge {
+  background: linear-gradient(180deg, #2e2e2e, #1a1a1a);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+}
+
+.dice-modal--bridge .dice-modal__mode-title {
+  color: #f0f0f0;
+}
+
+.dice-modal--bridge .dice-modal__mode-desc {
+  color: #aaa;
+}
+
+.dice-modal--bridge .dice-modal__label {
+  color: #f0f0f0;
+}
+
+.dice-modal__arena--bridge {
+  background: linear-gradient(180deg, #525252, #2a2a2a);
+  border-color: #777;
+  box-shadow:
+    inset 0 2px 6px rgba(255, 255, 255, 0.05),
+    0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.dice-modal--island {
+  background: linear-gradient(180deg, #e8f4fc, #d4e8f7);
+}
+
+.dice-modal--island .dice-modal__mode-title {
+  color: #2c5282;
+}
+
+.dice-modal--island .dice-modal__mode-desc {
+  color: #4a6fa5;
+}
+
+.dice-modal--island .dice-modal__label {
+  color: #2c5282;
+}
+
+.dice-modal__arena--island {
+  background: linear-gradient(180deg, #fff, #eef6fc);
+  border-color: #9ec5e8;
+}
+
+.dice-modal__pair {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.dice-modal__arena--rolling {
+  animation: arena-shake 0.55s ease-in-out infinite;
+}
+
+.dice-modal__hint {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #8b6914;
+}
+
+.dice-modal__label {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #6b2d5c;
+  min-height: 1.5em;
+}
+
+.dice-modal__mode {
+  margin: 0;
+  text-align: center;
+}
+
+.dice-modal__mode-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #8b6914;
+}
+
+.dice-modal__mode-desc {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #8b7355;
+  line-height: 1.4;
+}
+
+@keyframes dice-modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes dice-modal-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes arena-shake {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}

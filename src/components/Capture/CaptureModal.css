@@ -1,0 +1,12 @@
+.capture-modal__message {
+  margin: 0;
+  font-size: clamp(1.2rem, 5vw, 1.55rem);
+  font-weight: 800;
+  color: #bf360c;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.capture-modal__team-name {
+  font-size: clamp(1.45rem, 6.2vw, 1.9rem);
+}

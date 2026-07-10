@@ -1,0 +1,152 @@
+.victory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 6, 20, 0.72);
+  backdrop-filter: blur(6px);
+  animation: victory-fade-in 0.35s ease-out;
+  overflow: hidden;
+}
+
+.victory-modal__fireworks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.victory-modal__burst {
+  --hue: calc(38 + (var(--i) * 19));
+  position: absolute;
+  left: calc(8% + (var(--i) * 6.3%));
+  top: calc(12% + ((var(--i) % 5) * 11%));
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: hsl(var(--hue) 95% 62%);
+  box-shadow:
+    0 0 12px hsl(var(--hue) 95% 62%),
+    28px -18px 0 hsl(calc(var(--hue) + 30) 90% 58%),
+    -24px 14px 0 hsl(calc(var(--hue) + 60) 88% 55%),
+    18px 26px 0 hsl(calc(var(--hue) + 90) 85% 60%),
+    -30px -22px 0 hsl(calc(var(--hue) + 120) 90% 56%),
+    32px 8px 0 hsl(calc(var(--hue) + 150) 88% 58%),
+    -12px -32px 0 hsl(calc(var(--hue) + 180) 85% 54%),
+    8px 34px 0 hsl(calc(var(--hue) + 210) 90% 60%);
+  animation: victory-burst 1.8s ease-out infinite;
+  animation-delay: calc(var(--i) * 0.18s);
+  opacity: 0;
+}
+
+.victory-modal {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(92vw, 320px);
+  padding: 32px 28px 24px;
+  text-align: center;
+  background: linear-gradient(180deg, #fff9f0, #ffe8c8);
+  border: 2px solid #ffd080;
+  border-radius: 20px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.35),
+    0 0 0 4px rgba(255, 200, 80, 0.25);
+  animation: victory-pop-in 0.45s cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+
+.victory-modal__emoji {
+  margin: 0;
+  font-size: 3rem;
+  line-height: 1;
+  animation: victory-trophy-bounce 1.2s ease-in-out infinite;
+}
+
+.victory-modal__title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #6b2d5c;
+  letter-spacing: 0.02em;
+}
+
+.victory-modal__message {
+  margin: 4px 0 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #3d2914;
+}
+
+.victory-modal__message strong {
+  color: #6b2d5c;
+  font-size: 1.15rem;
+}
+
+.victory-modal__cheer {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #8b6914;
+}
+
+.victory-modal__button {
+  margin-top: 4px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  background: #6b2d5c;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.victory-modal__button:hover {
+  background: #8e4585;
+}
+
+.victory-modal__button:active {
+  transform: scale(0.97);
+}
+
+@keyframes victory-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes victory-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.82) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes victory-trophy-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.05); }
+}
+
+@keyframes victory-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}

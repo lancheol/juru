@@ -1,0 +1,98 @@
+.ladder-board {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.ladder-board__rail {
+  stroke: #5c4a3a;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ladder-board__rung {
+  stroke: #8b7355;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.ladder-board__cover {
+  fill: #f5ebe0;
+  stroke: #8b7355;
+  stroke-width: 3;
+}
+
+.ladder-board__cover-label {
+  font-size: 42px;
+  font-weight: 800;
+  fill: rgba(92, 74, 58, 0.28);
+  pointer-events: none;
+}
+
+.ladder-board__pick {
+  fill: rgba(255, 214, 120, 0.35);
+  stroke: #f0b429;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: fill 0.15s ease;
+}
+
+.ladder-board__pick:hover {
+  fill: rgba(255, 214, 120, 0.65);
+}
+
+.ladder-board__token {
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.ladder-board__token-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.ladder-board__token--swapable {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.ladder-board__token-ring {
+  fill: none;
+  stroke: #f0b429;
+  stroke-width: 2.5;
+  stroke-dasharray: 4 3;
+  pointer-events: none;
+}
+
+.ladder-board__token-label {
+  font-size: 9px;
+  font-weight: 700;
+  fill: #3d2914;
+}
+
+.ladder-board__result {
+  font-size: 8px;
+  font-weight: 700;
+  fill: #4a3728;
+}
+
+.ladder-board__result--survive {
+  fill: #2d6a4f;
+}
+
+.ladder-board__result--soju1 {
+  fill: #b5651d;
+}
+
+.ladder-board__result--soju2 {
+  fill: #9b2226;
+}
+
+.ladder-board__trace {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}

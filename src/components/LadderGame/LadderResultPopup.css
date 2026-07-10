@@ -1,0 +1,135 @@
+.ladder-result-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1070;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(12, 8, 16, 0.55);
+  backdrop-filter: blur(3px);
+  animation: ladder-result-fade-in 0.22s ease-out;
+}
+
+.ladder-result-popup {
+  box-sizing: border-box;
+  width: min(92vw, 340px);
+  padding: 1.5rem 1.25rem 1.35rem;
+  background: linear-gradient(180deg, #fffdf8 0%, #f8ecd8 100%);
+  border: 2px solid #d4a574;
+  border-radius: 18px;
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  text-align: center;
+  animation: ladder-result-pop-in 0.32s cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+
+.ladder-result-popup__emoji {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.ladder-result-popup__title {
+  margin: 0.35rem 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #3d2914;
+}
+
+.ladder-result-popup__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ladder-result-popup__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e8d5b5;
+  text-align: left;
+}
+
+.ladder-result-popup__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.ladder-result-popup__name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #3d2914;
+}
+
+.ladder-result-popup__badge {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ladder-result-popup__item--survive .ladder-result-popup__badge {
+  color: #1b5e3b;
+  background: #d8f3e3;
+}
+
+.ladder-result-popup__item--soju1 .ladder-result-popup__badge {
+  color: #8b4513;
+  background: #ffe8cc;
+}
+
+.ladder-result-popup__item--soju2 .ladder-result-popup__badge {
+  color: #9b2226;
+  background: #ffd6d8;
+}
+
+.ladder-result-popup__button {
+  margin-top: 1.15rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #2a1a08;
+  background: linear-gradient(180deg, #f0b429 0%, #e09f1f 100%);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(224, 159, 31, 0.35);
+}
+
+.ladder-result-popup__button:hover {
+  filter: brightness(1.05);
+}
+
+@keyframes ladder-result-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ladder-result-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

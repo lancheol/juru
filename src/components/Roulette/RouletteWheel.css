@@ -1,0 +1,125 @@
+.roulette-wheel-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.roulette-wheel__arrow {
+  font-size: 2.75rem;
+  line-height: 1;
+  color: #c62828;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  margin-bottom: 8px;
+  z-index: 3;
+}
+
+.roulette-wheel__outer {
+  position: relative;
+  width: min(96vw, 520px);
+  height: min(96vw, 520px);
+}
+
+.roulette-wheel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 10px solid #3d2914;
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 255, 255, 0.35),
+    0 8px 24px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
+  will-change: transform;
+}
+
+.roulette-wheel__spin-btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  border: 6px solid #3d2914;
+  background: linear-gradient(180deg, #fff8ee 0%, #f0d9a8 100%);
+  color: #3d2914;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.roulette-wheel__spin-btn:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.roulette-wheel__spin-btn:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+.roulette-wheel__spin-btn:not(:disabled):active {
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+/* ── 죽음의 룰렛 ── */
+.roulette-wheel__label--death {
+  position: absolute;
+  width: 88px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #4a3a32;
+  text-align: center;
+  line-height: 1.15;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  pointer-events: none;
+  word-break: keep-all;
+}
+
+.roulette-wheel--dense .roulette-wheel__label--death {
+  width: 66px;
+  font-size: 0.74rem;
+  line-height: 1.08;
+}
+
+/* ── 이동 룰렛 ── */
+.roulette-wheel--move {
+  border-color: #2c2418;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 248, 235, 0.45),
+    inset 0 0 24px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.roulette-wheel__outer:has(.roulette-wheel--move) .roulette-wheel__spin-btn {
+  border-color: #2c2418;
+  color: #2c2418;
+}
+
+.roulette-wheel__label--move {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15em;
+  max-width: 1.15em;
+  overflow: hidden;
+  font-size: clamp(0.82rem, 3vmin, 1.1rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 0.9;
+  letter-spacing: -0.22em;
+  word-spacing: -0.2em;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.45),
+    0 0 6px rgba(0, 0, 0, 0.35);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  white-space: nowrap;
+  pointer-events: none;
+  box-sizing: border-box;
+}
