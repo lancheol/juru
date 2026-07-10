@@ -22,7 +22,7 @@ export const DEATH_ROULETTE_SEGMENTS: RouletteSegment[] = [
     id: 'alcohol-exemption',
     label: '술 1잔 면제권',
     color: '#ffe8a3',
-    description: '걸렸을때 쓸 수 있는 면제권 팀원 중 한명만 사용가능',
+    description: '마시기 싫을 때 쓰는 면제권\n단체로 걸렸을 땐 단체 면제, 개인이 걸렸을 땐 개인 면제',
   },
   { id: 'other-team-drink', label: '우리팀 빼고 1잔', color: '#d4b8a8' },
   {
