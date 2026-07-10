@@ -47,7 +47,7 @@ export const DEATH_ROULETTE_SEGMENTS: RouletteSegment[] = [
     id: 'five-strengths',
     label: '나의 장점 5개 말하기',
     color: '#f5a8c8',
-    description: '룰렛 걸린 사람이 한명을 지목\n5초안에 장점을 5개 말하기',
+    description: '룰렛 걸린 사람이 한명을 지목\n지목당한 사람이 5초안에 지목한 사람의 장점을 5개 말하기',
   },
   {
     id: 'forbidden-word',
