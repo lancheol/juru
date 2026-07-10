@@ -184,7 +184,7 @@ function createBoardTiles(): Tile[] {
     id: 13,
     name: '야자타임',
     type: 'drink',
-    description: '야자타임',
+    description: '주사위 굴리기 한 사이클이 끝날 때까지\n(중복시 한 사이클 추가)',
     drinkCount: 1,
   }
 
